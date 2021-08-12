@@ -93,7 +93,7 @@ def admins_only():
 
 ```
 ### SamlAuth Authentication & Authorization middleware
-To simplify authentication and authorization of views, a companion module, [ SamlAuth middleware ](SAMLAUTH.md) relegating these tasks to middleware, and providing both route-based and path prefix based authorization mechanisms.
+To simplify authentication and authorization of views, a companion module, [ SamlAuth middleware ](READMEAUTH.md) relegating these tasks to middleware, and providing both route-based and path prefix based authorization mechanisms.
 > Example using SamlAuth:
 ```python
 @app.route('/admins', authz={'groups':'sysadmins'})

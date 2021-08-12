@@ -1,7 +1,7 @@
  
 ### SAML Service Provider (SamlSP) Class
 ### saml = SamlSP()
-####Instantiate class
+#### Instantiate class
 ```python
 saml = SamlSP(app, saml_config, log=None, **kwargs)
 
@@ -46,7 +46,7 @@ Creates a **SAMLRequest** for a GET login to the IdP.  This returns a redirect t
 ```python
 saml.add_login_hook(f)
 ```
-Adds a login hook, which is run after a successfule **SAMLResponse** has been authenticated. [The purpose is to process SAML assertion data.](docs/LOGINHOOKS.md)  This can be used as a decorator for such a function.
+Adds a login hook, which is run after a successfule **SAMLResponse** has been authenticated. [The purpose is to process SAML assertion data.](LOGINHOOKS.md)  This can be used as a decorator for such a function.
 
 **`f`**
 * A login hook `f` is a function. This is added to a list of login hooks run after a successful authentication. 
@@ -58,5 +58,5 @@ def login_hook(username, attributes):
         return username, attributes
 ```
 * Login hooks can prevent an authentication from completing by raising an exception
-* Login hooks [are discussed here.](docs/LOGINHOOKS.md)
+* Login hooks [are discussed here.](LOGINHOOKS.md)
 
