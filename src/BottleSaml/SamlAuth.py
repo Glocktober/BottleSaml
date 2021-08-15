@@ -120,7 +120,11 @@ auth = SamlAuth(saml, authn_all_routes, authz_by_prefix, log=None)
 
         """
 
-        if self.authn_all_routes or \
+        if route.config.get('authn') is False:
+            # authn is neither True nor None - set explicity False
+            self.log.info(f'SAMLAuth: Skipping authn (explict) on {route.rule}')
+
+        elif self.authn_all_routes or \
             route.config.get('authn', False) or \
             route.config.get('authz', False):
             
@@ -140,9 +144,8 @@ auth = SamlAuth(saml, authn_all_routes, authz_by_prefix, log=None)
             auth_required.__name__ = f.__name__
             return auth_required
 
-        else:
-            # this decorator not applied.
-            return f
+        # this decorator not applied.
+        return f
     
  
     def __apply_require_attrs(self, f, route):
