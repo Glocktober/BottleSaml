@@ -331,7 +331,7 @@ def set_no_cache_headers():
     response.add_header('Expires', 'Sun, 25 Jul 2021 15:42:14 GMT')
 
 
-def response_error(status=401, body, hdrs=None):
+def response_error(status=401, body='', hdrs=None):
         response.status = status
         response.headers.update({
             'Cache-Control': 'no-cache',
