@@ -148,6 +148,7 @@ This isn't difficult, but it can confusing if you are unfamiliar with SAML.
 |**acs_url** |URL|*required*|URL of our Assertion Control Service (ACS) endpoint|
 |**user_attr**|string|name_id|SAML assertion providing `username` attribute|
 |**assertions**|[string]|[]|A list of SAMLRespons assertions to collect|
+|**idp_ok**|Bool|True|Permit IdP initiated logon|
 |**auth_duration**|int|3600|Seconds between SAML credentials renewal |
 |**certificate**|string|*required*|The IdP's public certificate for signing verification|
 

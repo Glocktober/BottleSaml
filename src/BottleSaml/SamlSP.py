@@ -22,7 +22,7 @@ from minisaml.response import validate_response
 from minisaml.request import get_request_redirect_url
 from bottle import request, response
 
-REQIDLEN=12     # length of SAML request id token
+from .reqID import ReqID
 
 """
 SAML Service Provider module for Bottle
@@ -90,6 +90,12 @@ class SamlSP:
         # login hooks - build_attrs_list must be first
         self.login_hooks = [self.__build_attrs_list]
 
+        # Accept responses from IDP initiated requests
+        self.idp_ok = config.get('idp_ok', True)
+        
+        # Request ID generator/validator
+        self.reqid = ReqID(idpok=self.idp_ok, ttl=3)
+
         # Install the Assertion Control Service (ACS) endpoint
         app.route('/saml/acs', name='ACS', 
                 callback=self.finish_saml_login, 
@@ -139,7 +145,7 @@ class SamlSP:
         """
 
         # Create a request id
-        request_id = 'id' + token_urlsafe(REQIDLEN)
+        request_id = self.reqid.new_requestID()
 
         # encode relay state
         relay_state = urlencode(kwargs, doseq=True) if kwargs else None
@@ -205,7 +211,14 @@ class SamlSP:
             #session.clear()
             return BadRequestError(msg)
             
-        self.log.info(f'SAML: ACS received assertions in response to {saml_resp.in_response_to}')
+        self.log.info(f'SAML: ACS received SAMLResponse to {saml_resp.in_response_to}')
+
+        if self.reqid.validate_requestID(saml_resp.in_response_to) is False:
+            msg = f'SAML: Request not issued here: "{saml_resp.in_response_to}"'
+            self.log.info(msg)
+
+            # If we're not allowing IdP initiated login,issue BadRequest
+            return BadRequestError(msg)
 
         # Validate this was from where we requested it
         if saml_resp.issuer != self.saml_issuer:
@@ -213,9 +226,7 @@ class SamlSP:
             self.log.info(msg)
             return ConflictError(msg)
 
-        # Create a dictionary of attributes from the saml_response
-        #attrs = build_attrs_list(saml_resp, self.saml_attrs)
-
+        # First login hook will convert saml_resp to dict
         username = saml_resp.name_id
         attrs = saml_resp
 
