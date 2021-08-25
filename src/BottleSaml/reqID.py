@@ -11,7 +11,7 @@ class ReqID:
     Create and validate request ID's
     """
 
-    def __init__(self, idpok=False, id='ReqID', ttl=10):
+    def __init__(self, idpok=False, id='ReqID', ttl=30):
 
         if not idpok:
             # Not accepting IDP initiated Logon

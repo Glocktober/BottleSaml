@@ -162,20 +162,23 @@ auth = SamlAuth(saml, authn_all_routes, authz_by_prefix, log=None)
         - raises UnauthorizedError (403 Permission not granted) on match failure 
         """
         
-        req_attrs = route.config.get('authz', False)
-        if req_attrs:
+        if route.config.get('authz', False):
             # apply attribute requirements on a specific route
             
+            # Build required attribute list from config namespace
+            req_attr_list = {}
+            for key in route.config.get('authz'):
+                req_attr_list[key] = route.config['authz.'+key]
+
             def authz_required(*args, **kwargs):
                 """ Require attribute match """
 
                 session = request.session
                 my_attrs = self.saml.my_attrs
-
+                
                 # check each attribute to test
-                for attr in req_attrs:
-                    value = req_attrs[attr]
-
+                for attr, value in req_attr_list.items():
+                    
                     # if session.attributes doesn't have the attr 
                     #   or none of its values matches one we're looking for
                     #     Return Unauthorized 

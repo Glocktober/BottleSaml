@@ -14,7 +14,6 @@ import os
 import sys
 import time
 from urllib.parse import urlencode, parse_qs
-from secrets import token_urlsafe
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_pem_x509_certificate
@@ -94,7 +93,7 @@ class SamlSP:
         self.idp_ok = config.get('idp_ok', True)
         
         # Request ID generator/validator
-        self.reqid = ReqID(idpok=self.idp_ok, ttl=3)
+        self.reqid = ReqID(idpok=self.idp_ok, ttl=config.get('reqid_life',60))
 
         # Install the Assertion Control Service (ACS) endpoint
         app.route('/saml/acs', name='ACS', 
@@ -214,7 +213,7 @@ class SamlSP:
         self.log.info(f'SAML: ACS received SAMLResponse to {saml_resp.in_response_to}')
 
         if self.reqid.validate_requestID(saml_resp.in_response_to) is False:
-            msg = f'SAML: Request not issued here: "{saml_resp.in_response_to}"'
+            msg = f'SAML: Invalid Request: "{saml_resp.in_response_to}"'
             self.log.info(msg)
 
             # If we're not allowing IdP initiated login,issue BadRequest
