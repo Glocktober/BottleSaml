@@ -99,7 +99,7 @@ class SamlSP:
         app.route('/saml/acs', name='ACS', 
                 callback=self.finish_saml_login, 
                 method=['POST'], 
-                skip='SamlAuth')    # Prevent auth loop with IdP
+                skip='BotAuth')    # Prevent auth loop with IdP
     
 
     @property
