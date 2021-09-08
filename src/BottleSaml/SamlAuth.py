@@ -1,17 +1,3 @@
-"""
-SamlSP - Authentication/Authorization middleware for Bottle
-
-- provides route based authentication and authorization
-
-- provides path prefix based authentication and authroization
-
-- Two authentication modes: (determined by authn_all_routes)
-    - Opt-Out mode: authenticates all routes unless they opt-out
-    - Opt-In mode: routes requiring authentication or authorization must opt-in 
-
-- Bottle Plugin API v2
-
-"""
 import sys
 from bottle import request, response, PluginError
 

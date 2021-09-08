@@ -92,9 +92,9 @@ def admins_only():
         return 'Restricted access - admins only'
 
 ```
-### SamlAuth Authentication & Authorization middleware
-To simplify authentication and authorization of views, a companion module, [ SamlAuth middleware ](READMEAUTH.md) relegating these tasks to middleware, and providing both route-based and path prefix based authorization mechanisms.
-> Example using SamlAuth:
+### Using SamlSP with BotAuth() Authentication & Authorization middleware
+To simplify authentication and authorization of views, a companion module, [ BottleAuth middleware ](https://github.com/Glocktober/BottleAuth) relegating these tasks to middleware, and providing both route-based and path prefix based authorization mechanisms.
+> Example using SamlSP with BotAuth:
 ```python
 @app.route('/admins', authz={'groups':'sysadmins'})
 def admins_only():
