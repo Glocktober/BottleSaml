@@ -53,9 +53,12 @@ class SamlSP:
     name = 'SamlSP'     # Bottle Plugin API v2 required
     api = 2             # Bottle Plugin API v2 required
 
-    def __init__(self, app, saml_config=None, log=None, **kwargs):
+    def __init__(self, app, sess, saml_config=None, log=None, **kwargs):
 
         config = saml_config
+
+        # session manager
+        self.sess = sess
         
         self.saml_endpoint = config['saml_endpoint']
         self.saml_audience = config['spid']
@@ -99,7 +102,7 @@ class SamlSP:
         app.route('/saml/acs', name='ACS', 
                 callback=self.finish_saml_login, 
                 method=['POST'], 
-                skip='BotAuth')    # Prevent auth loop with IdP
+                skip=True)    # No middleware on this route
     
 
     @property
@@ -174,6 +177,19 @@ class SamlSP:
 
     # /saml/acs
     def finish_saml_login(self):
+        """
+        Wrap session context for assertion control service
+        """
+        session = self.sess.open_session()
+
+        ret = self.finish_saml_login_work(session)
+        
+        self.sess.close_session(session)
+        
+        return ret
+
+
+    def finish_saml_login_work(self, session):
         """             
         Assertion Control Service endpoint (/saml/acs):
 
@@ -188,7 +204,6 @@ class SamlSP:
         - redirect user to 'next' in RelayState or '/' if missing
 
         """ 
-        session = request.session
         
         if self.is_authenticated:
             return AppError('ACS invoked for authenticated user')
@@ -264,6 +279,7 @@ class SamlSP:
 
     def add_login_hook(self, f):
         """ Add login hook Decorator """
+        
         self.login_hooks.append(f)           
         return f
 
