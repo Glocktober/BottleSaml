@@ -3,7 +3,7 @@
 ### saml = SamlSP()
 #### Instantiate class
 ```python
-saml = SamlSP(app, saml_config, log=None, **kwargs)
+saml = SamlSP(app, sess, saml_config, log=None, **kwargs)
 
 ```
 - Creates an instance of the SAML service provider.
@@ -12,6 +12,9 @@ saml = SamlSP(app, saml_config, log=None, **kwargs)
 
 **`app`**
   * a **Bottle()** class instance. 
+
+**`sess`**
+  * a **BottleSession()** class instance. This allows **SamlSP()** to manage it's session.
 
 **`saml_config`**
   * A Python `dict` containing the SAML configuration data.  [This is detailed in the overview document.](READMESP.md)  This is a required argument.

@@ -38,9 +38,9 @@ from config import saml_config, cache_config
 app = Bottle()                              
 
 # Install session middleware
-BottleSessions(app, session_backing=cache_config)     
+sess = BottleSessions(app, session_backing=cache_config)     
 
-saml = SamlSP(app, saml_config=saml_config)   # SAML Service Provider
+saml = SamlSP(app,sess=sess, saml_config=saml_config)   # SAML Service Provider
 ```
 
 The **`saml_config`** is a Python `dict` containing the necessary information to use the [SAML IdP](https://en.wikipedia.org/wiki/Identity_provider_(SAML)) (and a few configuration parameters). The parameters needed for configuring `saml_config` are discussed later. The [SamlSP class is discussed here](SAMLSPCLASS.md), cover some other features, [such as login hooks.](LOGINHOOKS.md)
