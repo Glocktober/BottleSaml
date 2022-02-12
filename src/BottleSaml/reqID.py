@@ -64,7 +64,8 @@ class ReqID:
             # convert to bytes
             reqid = reqid.encode('utf-8')
 
-            if mess := self.f.decrypt(reqid, self.ttl):
+            mess = self.f.decrypt(reqid, self.ttl)
+            if mess:
                 if mess == self.id:
                     return True
         
